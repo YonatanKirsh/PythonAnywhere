@@ -1,0 +1,7 @@
+Save token locally-
+	pro: very simple to implement and upkeep.
+	con: unsafe - if token is stolen or lost, there's no way to connect.
+
+Request new token each time-
+	pro: safe - no danger of token being abused.
+	con: more implementation, harder to upkeep. maybe requires new login each time?
