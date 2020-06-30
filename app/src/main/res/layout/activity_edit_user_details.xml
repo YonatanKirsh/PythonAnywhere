@@ -4,46 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".EditUserDetailsActivity">
 
     <TextView
-        android:id="@+id/text_view_username"
+        android:id="@+id/text_view_edit_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/text_view_pretty_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:text="@string/edit_details_message"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/image_view_user_image"
+    <EditText
+        android:id="@+id/edit_text_pretty_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_image_url" />
+
+    <EditText
+        android:id="@+id/edit_text_image_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="36dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_pretty_name"
-        android:contentDescription="Users image" />
-
-
+        app:layout_constraintBottom_toTopOf="@+id/button_update_details" />
 
 
     <Button
-        android:id="@+id/button_goto_update_details"
+        android:id="@+id/button_update_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/goto_update_details"
+        android:text="@string/submit_update_details"
         android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/button_goto_main"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/button_goto_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/goto_main"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintLeft_toRightOf="@+id/button_update_details"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

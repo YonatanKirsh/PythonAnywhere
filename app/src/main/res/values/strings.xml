@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PythonAnywhere</string>
+    <string name="init_user_message">Enter a username (only letters and digits)</string>
+    <string name="enter_button_text">Enter</string>
+    <string name="submit_update_details">Update details!</string>
+    <string name="edit_details_message">Edit your details bellow :)</string>
+    <string name="goto_update_details">Edit my details</string>
+    <string name="goto_main">Go back</string>
 </resources>

@@ -4,46 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".CreateNewUserActivity">
 
     <TextView
-        android:id="@+id/text_view_username"
+        android:id="@+id/text_view_enter_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/text_view_pretty_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:text="@string/init_user_message"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/image_view_user_image"
+    <EditText
+        android:id="@+id/edit_text_enter_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_pretty_name"
-        android:contentDescription="Users image" />
-
-
-
+        app:layout_constraintTop_toBottomOf="@+id/text_view_enter_username" />
 
     <Button
-        android:id="@+id/button_goto_update_details"
+        android:id="@+id/button_enter_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/goto_update_details"
-        android:layout_marginBottom="12dp"
+        android:text="@string/enter_button_text"
+        android:layout_marginTop="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_enter_username" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
