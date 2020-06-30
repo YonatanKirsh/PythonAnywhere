@@ -19,6 +19,7 @@ public class SetUsernameRequest extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        //
         return null;
     }
 }
