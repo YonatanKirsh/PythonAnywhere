@@ -31,6 +31,9 @@ public class GetUserDataWorker extends Worker {
     public Result doWork() {
         PythonAnywhereService server = Communicator.getInstance().service;
         String token = getInputData().getString(Shared.TOKEN_TAG);
+        if (token == null){
+            return Result.failure();
+        }
         Call<UserResponse> call = server.getUser(token);
         try {
             Response<UserResponse> response = call.execute();

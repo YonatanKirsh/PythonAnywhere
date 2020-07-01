@@ -76,9 +76,9 @@ public class EditUserDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String prettyNameInput = mEditTextPrettyName.getText().toString();
                 String imageUrlInput = mEditTextImageUrl.getText().toString();
-//                if (!Shared.givenInternetPermission(v.getContext())){
-//                    return;
-//                }
+                if (!Shared.givenInternetPermission(v.getContext())){
+                    return;
+                }
                 // request token from server using input-username
                 Data inputData = new Data
                         .Builder()

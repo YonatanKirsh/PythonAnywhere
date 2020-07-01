@@ -41,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mUpdateDetailsButton;
     private ProgressBar mSpinKit;
 
-    private final Data mTokenInputData = new Data.Builder()
-            .putString(Shared.TOKEN_TAG, mToken)
-            .build();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mWorkManager = WorkManager.getInstance(this);
         initUser();
-//        mUser = new User("noUsername", "noPrettyName", "noImageUrl");
-        reloadLocalUserInfo(savedInstanceState);
+        mUser = new User("noUsername", "noPrettyName", "noImageUrl");
+//        reloadLocalUserInfo(savedInstanceState);
         initViews();
     }
 
@@ -161,11 +157,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void reloadServerUserInfo(){
+        Data tokenData = new Data.Builder()
+                .putString(Shared.TOKEN_TAG, mToken)
+                .build();
         // request user info from worker
         WorkRequest request = new OneTimeWorkRequest
                 .Builder(GetUserDataWorker.class)
-                .setConstraints(Shared.CONSTRAINTS)
-                .setInputData(mTokenInputData)
+//                .setConstraints(Shared.CONSTRAINTS)
+                .setInputData(tokenData)
                 .build();
         mWorkManager.enqueue(request);
 
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                             // initialize mUser
                             Data data = info.getOutputData();
                             mUser = GetUserDataWorker.getUserFromData(data);
-                            mSpinKit.setVisibility(View.INVISIBLE);
+//                            mSpinKit.setVisibility(View.INVISIBLE);
                         }
                     }
                 });

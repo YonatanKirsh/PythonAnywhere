@@ -66,9 +66,9 @@ public class CreateNewUserActivity extends AppCompatActivity {
                     Snackbar.make(v, ILLEGAL_USERNAME_MESSAGE, Snackbar.LENGTH_LONG).show();
                     return;
                 }
-//                if (!Shared.givenInternetPermission(v.getContext())){
-//                    return;
-//                }
+                if (!Shared.givenInternetPermission(v.getContext())){
+                    return;
+                }
                 // request token from server using input-username
                 Data inputData = new Data
                         .Builder()
@@ -76,7 +76,7 @@ public class CreateNewUserActivity extends AppCompatActivity {
                         .build();
                 WorkRequest request = new OneTimeWorkRequest
                         .Builder(GetTokenWorker.class)
-                        .setConstraints(Shared.CONSTRAINTS)
+//                        .setConstraints(Shared.CONSTRAINTS)
                         .setInputData(inputData)
                         .build();
                 WorkManager manager = WorkManager.getInstance(getApplicationContext());
