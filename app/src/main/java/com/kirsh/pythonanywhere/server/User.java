@@ -13,4 +13,16 @@ public class User {
     public String username;
     public String prettyName;
     public String imageUrl;
+
+//    public String getUsername(){
+//        return username;
+//    }
+//
+//    public String getPrettyName(){
+//        return prettyName;
+//    }
+//
+//    public String getImageUrl(){
+//        return imageUrl;
+//    }
 }

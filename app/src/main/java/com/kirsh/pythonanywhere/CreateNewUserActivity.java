@@ -16,41 +16,44 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.material.snackbar.Snackbar;
 import com.kirsh.pythonanywhere.work.GetTokenWorker;
-import com.kirsh.pythonanywhere.work.GetUserDataWorker;
 
 public class CreateNewUserActivity extends AppCompatActivity {
 
     private final static String ILLEGAL_USERNAME_MESSAGE = "Illegal username!\nValid username contains letters and digits.";
 
-    private TextView mTextViewEnterUserName;
     private EditText mEditTextEnterUserName;
     private Button mButtonEnterUsername;
+    private LifecycleOwner mLifecycleOwner;
+    private ProgressBar mSpinKit;
+//    private SuperApp mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_user);
+        mLifecycleOwner = this;
+//        mApp = (SuperApp) getApplicationContext();
         initViews();
     }
 
-    private void handleSuccessfullCreateUser(){
-        finish();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     private void initViews(){
-        // page instructions view
-        mTextViewEnterUserName = findViewById(R.id.text_view_username);
         // edit text view
         mEditTextEnterUserName = findViewById(R.id.edit_text_enter_username);
         // button view
         mButtonEnterUsername = findViewById(R.id.button_enter_username);
         setButton(mButtonEnterUsername);
+        // spin-kit
+        mSpinKit = findViewById(R.id.spin_kit);
+        mSpinKit.setVisibility(View.INVISIBLE);
+        Sprite doubleBounce = new DoubleBounce();
+        mSpinKit.setIndeterminateDrawable(doubleBounce);
     }
 
     private void setButton(Button button) {
@@ -63,7 +66,10 @@ public class CreateNewUserActivity extends AppCompatActivity {
                     Snackbar.make(v, ILLEGAL_USERNAME_MESSAGE, Snackbar.LENGTH_LONG).show();
                     return;
                 }
-                // request token, return username
+//                if (!Shared.givenInternetPermission(v.getContext())){
+//                    return;
+//                }
+                // request token from server using input-username
                 Data inputData = new Data
                         .Builder()
                         .putString(Shared.USERNAME_TAG, usernameInput)
@@ -75,29 +81,36 @@ public class CreateNewUserActivity extends AppCompatActivity {
                         .build();
                 WorkManager manager = WorkManager.getInstance(getApplicationContext());
                 manager.enqueue(request);
-                Shared.showLoadingUI();
-
+                mSpinKit.setVisibility(View.VISIBLE);
+                // wait for response, save token to sp, goto main activity
                 manager.getWorkInfoByIdLiveData(request.getId())
-                        .observe((LifecycleOwner) getApplicationContext(), new Observer<WorkInfo>() {
+                        .observe(mLifecycleOwner, new Observer<WorkInfo>() {
                             @Override
                             public void onChanged(WorkInfo info) {
                                 if (info != null && info.getState().isFinished()) {
-                                    // initialize token, return to main
+                                    // save token, return to main
                                     String token = info.getOutputData().getString(Shared.TOKEN_TAG);
+
+//                                    mApp.initToken(token);
                                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                     SharedPreferences.Editor editor = sp.edit();
                                     editor.putString(Shared.TOKEN_TAG, token);
                                     editor.apply();
+                                    handleSuccessfulCreateUser();
                                 }
                             }
                         });
-
-
             }
         });
     }
 
     private boolean isLegalUsername(String input){
-        return !input.isEmpty() && input.matches("[^A-Za-z0-9]+");
+        return !input.isEmpty() && input.matches("[A-Za-z0-9]+");
+    }
+
+    private void handleSuccessfulCreateUser(){
+        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

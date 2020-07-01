@@ -9,7 +9,8 @@ public class Communicator {
     // url for real server
     public final static String BASE_URL = "https://hujipostpc2019.pythonanywhere.com/";
     // url for local debugging server
-//    private final static String BASE_URL = "http://192.168.5.2:5678/"; //todo delete me
+//    public final static String BASE_URL = "http://localhost:8000/"; //todo delete me
+//    public final static String BASE_URL = "http://192.168.5.2:5678/"; //todo delete me
 
     private OkHttpClient okhClient;
     private Retrofit retrofit;
@@ -21,7 +22,7 @@ public class Communicator {
         retrofit = new Retrofit.Builder()
                 .client(okhClient)
                 .baseUrl(BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(PythonAnywhereService.class);
         communicator = this;

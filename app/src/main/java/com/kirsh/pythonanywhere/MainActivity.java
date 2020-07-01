@@ -16,8 +16,11 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.kirsh.pythonanywhere.server.Communicator;
 import com.kirsh.pythonanywhere.server.User;
 import com.kirsh.pythonanywhere.work.GetUserDataWorker;
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mPrettyNameTextView;
     private ImageView mUserImageView;
     private Button mUpdateDetailsButton;
+    private ProgressBar mSpinKit;
 
     private final Data mTokenInputData = new Data.Builder()
             .putString(Shared.TOKEN_TAG, mToken)
@@ -48,23 +52,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mWorkManager = WorkManager.getInstance(this);
         initUser();
+//        mUser = new User("noUsername", "noPrettyName", "noImageUrl");
         reloadLocalUserInfo(savedInstanceState);
         initViews();
     }
 
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//        String username = sp.getString(USERNAME_TAG, null);
-//        String prettyName = sp.getString(PRETTY_NAME_TAG, "");
-//        String imageUrl = sp.getString(IMAGE_URL_TAG, "");
-//        mUser = new User(username, prettyName, imageUrl);
-//    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        if (mToken != null){
+        if (mUser != null){
             outState.putString(Shared.USERNAME_TAG, mUser.username);
             outState.putString(Shared.PRETTY_NAME_TAG, mUser.prettyName);
             outState.putString(Shared.IMAGE_URL_TAG, mUser.imageUrl);
@@ -73,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUser(){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//        SuperApp app = (SuperApp) getApplicationContext();
+//        mToken = app.getToken();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mToken = sp.getString(Shared.TOKEN_TAG, null);
         if (mToken == null){
             openActivityCreateNewUser();
@@ -82,24 +84,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
-        // username view
-        mUserNameTextView = findViewById(R.id.text_view_username);
-        mUserNameTextView.setText(mUser.username);
+        if (mUser != null){
+            // username view
+            mUserNameTextView = findViewById(R.id.text_view_username);
+            mUserNameTextView.setText(mUser.username);
 
-        // pretty name view
-        mPrettyNameTextView = findViewById(R.id.text_view_pretty_name);
-        setPrettyNameText(mPrettyNameTextView);
+            // pretty name view
+            mPrettyNameTextView = findViewById(R.id.text_view_pretty_name);
+            setPrettyNameText(mPrettyNameTextView);
 
-        // image view
-        mUserImageView = findViewById(R.id.image_view_user_image);
-        setImageView(mUserImageView);
+            // image view
+            mUserImageView = findViewById(R.id.image_view_user_image);
+            setImageView(mUserImageView);
 
-        // button view
-        mUpdateDetailsButton = findViewById(R.id.button_goto_update_details);
-        setButton(mUpdateDetailsButton);
+            // button view
+            mUpdateDetailsButton = findViewById(R.id.button_goto_update_details);
+            setButton(mUpdateDetailsButton);
+
+            // spin-kit
+            mSpinKit = findViewById(R.id.spin_kit);
+            mSpinKit.setVisibility(View.INVISIBLE);
+            Sprite doubleBounce = new DoubleBounce();
+            mSpinKit.setIndeterminateDrawable(doubleBounce);
+        }
     }
 
     private void setPrettyNameText(TextView view){
+        if (mUser == null || mUser.prettyName == null){
+            return;
+        }
         if (mUser.prettyName.isEmpty()){
             view.setText(String.format(PRETTY_NAME_PARTIAL_TEXT, mUser.username));
         }
@@ -107,10 +120,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setImageView(ImageView view){
+        if (mUser == null || mUser.imageUrl == null){
+            return;
+        }
         if (mUser.imageUrl.isEmpty()){
             view.setVisibility(View.INVISIBLE);
         }else {
-            Picasso.get().load(Communicator.BASE_URL + mUser.imageUrl).into(view);
+            Picasso.get().load(Communicator.BASE_URL + "/images/" + mUser.imageUrl).into(view);
         }
     }
 
@@ -130,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void openActivityUpdateDetails(){
         Intent intent = new Intent(this, EditUserDetailsActivity.class);
+        intent.putExtra(Shared.PRETTY_NAME_TAG, mUser.prettyName);
+        intent.putExtra(Shared.IMAGE_URL_TAG, mUser.imageUrl);
         startActivity(intent);
     }
 
@@ -150,9 +168,9 @@ public class MainActivity extends AppCompatActivity {
                 .setInputData(mTokenInputData)
                 .build();
         mWorkManager.enqueue(request);
-        Shared.showLoadingUI();
 
-        // add loading-image till user received
+        // add loading-image till user is received
+        mSpinKit.setVisibility(View.VISIBLE);
         mWorkManager.getWorkInfoByIdLiveData(request.getId())
                 .observe(this, new Observer<WorkInfo>() {
                     @Override
@@ -161,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                             // initialize mUser
                             Data data = info.getOutputData();
                             mUser = GetUserDataWorker.getUserFromData(data);
-                            Shared.removeLoadingUI();
+                            mSpinKit.setVisibility(View.INVISIBLE);
                         }
                     }
                 });
